@@ -19,9 +19,6 @@ app.use(express.json());
 
 connectDb();
 
-app.use("/", (req, res) => {
-  res.send("Node Server");
-});
 app.use("/todo", require("./routes/todoRoutes"));
 
 app.listen(port, () => {
