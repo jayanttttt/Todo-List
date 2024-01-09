@@ -20,6 +20,7 @@ app.use(express.json());
 connectDb();
 
 app.use("/todo", require("./routes/todoRoutes"));
+app.use("/user", require("./routes/userRoutes"));
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

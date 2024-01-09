@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Create from "./Create";
-import api from "./api";
-import deleteImage from "./assets/icons/White.svg";
+import api from "../api";
+import deleteImage from "../assets/icons/White.svg";
 
 const Home = () => {
   const [todos, setTodos] = useState([]);
