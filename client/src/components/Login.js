@@ -1,10 +1,44 @@
 import React, { useState } from "react";
+import api from "../api";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const router = useNavigate();
   const [selectedOption, setSelectedOption] = useState("Login");
   const [phNumber, setPhNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = () => {
+    if (selectedOption === "Login") {
+      setLoading(true);
+      api
+        .post("/user/login", {
+          number: phNumber,
+          password: password,
+        })
+        .then(({ data }) => {
+          localStorage.setItem("user_id", data.user_id);
+          router("/home");
+        })
+        .catch(({ response }) => setError(response.data))
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(true);
+      api
+        .post("/user/register", {
+          number: phNumber,
+          password: password,
+        })
+        .then(({ data }) => {
+          localStorage.setItem("user_id", data.user_id);
+          router("/home");
+        })
+        .catch(({ response }) => setError(response.data))
+        .finally(() => setLoading(false));
+    }
+  };
 
   return (
     <div
@@ -88,7 +122,10 @@ const Login = () => {
                     flex: "0.5",
                   }
             }
-            onClick={() => setSelectedOption("Login")}
+            onClick={() => {
+              setSelectedOption("Login");
+              setError();
+            }}
           >
             Login
           </h3>
@@ -113,7 +150,10 @@ const Login = () => {
                     flex: "0.5",
                   }
             }
-            onClick={() => setSelectedOption("Register")}
+            onClick={() => {
+              setSelectedOption("Register");
+              setError();
+            }}
           >
             Register
           </h3>
@@ -153,7 +193,10 @@ const Login = () => {
             <input
               type="number"
               value={phNumber}
-              onChange={(e) => setPhNumber(e.target.value)}
+              onChange={(e) => {
+                setPhNumber(e.target.value);
+                setError();
+              }}
               style={{
                 width: "272px",
                 paddingLeft: "40px",
@@ -206,7 +249,10 @@ const Login = () => {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError();
+              }}
               style={{
                 width: "300px",
                 padding: "0px 0px 0px 10px",
@@ -236,23 +282,38 @@ const Login = () => {
               color: "#f76152",
             }}
           >
-            error text here
+            {error}
           </p>
         )}
         <p
-          style={{
-            background: "#17AD7D",
-            fontSize: "18px",
-            fontWeight: "700",
-            borderRadius: "10px",
-            textAlign: "center",
-            width: "230px",
-            color: "white",
-            margin: "10vh 0px 0px 0px",
-            padding: "10px 0px",
-          }}
+          style={
+            loading
+              ? {
+                  background: "#E0E0E0",
+                  fontSize: "18px",
+                  fontWeight: "700",
+                  borderRadius: "10px",
+                  textAlign: "center",
+                  width: "230px",
+                  color: "white",
+                  margin: "10vh 0px 0px 0px",
+                  padding: "10px 0px",
+                }
+              : {
+                  background: "#17AD7D",
+                  fontSize: "18px",
+                  fontWeight: "700",
+                  borderRadius: "10px",
+                  textAlign: "center",
+                  width: "230px",
+                  color: "white",
+                  margin: "10vh 0px 0px 0px",
+                  padding: "10px 0px",
+                }
+          }
+          onClick={() => !loading && handleLogin()}
         >
-          submit
+          continue
         </p>
       </div>
     </div>

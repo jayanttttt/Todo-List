@@ -5,8 +5,9 @@ const Create = ({ setTodos, setLoading }) => {
   const [task, setTask] = useState("");
   const handleAdd = () => {
     setLoading(true);
+    const user_id = localStorage.getItem("user_id");
     api
-      .post("/todo/create", { task: task })
+      .post("/todo/create", { task: task, user_id: user_id })
       .then(({ data }) => setTodos(data))
       .catch((error) => console.log(error))
       .finally(() => {
