@@ -36,13 +36,14 @@ const updateTodo = asyncHandler(async (req, res) => {
 });
 
 const deleteTodo = asyncHandler(async (req, res) => {
-  const todo = await TodoModel.findById(req.body.id);
+  const { id, user_id } = req.body;
+  const todo = await TodoModel.findById({ _id: id });
   if (!todo) {
     res.status(404).json("Todo not found");
     throw new Error("Todo not found");
   }
-  const data = await TodoModel.deleteOne({ _id: req.body.id });
-  const updatedTodoList = await TodoModel.find({ user_id: data.user_id });
+  await TodoModel.deleteOne({ _id: req.body.id });
+  const updatedTodoList = await TodoModel.find({ user_id: user_id });
   res.status(200).json(updatedTodoList);
 });
 
