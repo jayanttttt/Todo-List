@@ -5,13 +5,13 @@ const User = require("../models/userModel");
 const registerUser = asyncHandler(async (req, res) => {
   const { number, password } = req.body;
   if (!number || !password) {
-    res.status(400);
+    res.status(400).json("All fields are mandatory");
     throw new Error("All fields are mandatory");
   }
 
   const userAvailable = await User.findOne({ number: number });
   if (userAvailable) {
-    res.status(404);
+    res.status(400).json("User already exists");
     throw new Error("User already exists");
   }
 
@@ -25,25 +25,25 @@ const registerUser = asyncHandler(async (req, res) => {
   if (user) {
     res.status(201).json({ user_id: user.id });
   } else {
-    res.status(400);
+    res.status(400).json("User data is not valid");
     throw new Error("User data is not valid");
   }
 });
 
 const loginUser = asyncHandler(async (req, res) => {
   const { number, password } = req.body;
-  if (!number || !number) {
-    res.status(400);
+  if (!number || !password) {
+    res.status(400).json("All fields are mandatory");
     throw new Error("All fields are mandatory");
   }
   const user = await User.findOne({ number: number });
   if (!user) {
-    res.status(400);
+    res.status(400).json("User not found");
     throw new Error("User not found");
   } else if (user && (await bcrypt.compare(password, user.password))) {
     res.status(200).json({ user_id: user.id });
   } else {
-    res.status(400);
+    res.status(400).json("Number or password is not valid");
     throw new Error("Number or password is not valid");
   }
 });

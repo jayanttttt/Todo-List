@@ -10,7 +10,7 @@ const getTodos = asyncHandler(async (req, res) => {
 const createTodo = asyncHandler(async (req, res) => {
   const { task, user_id } = req.body;
   if (!task || !user_id) {
-    res.status(400);
+    res.status(400).json("Task cannot be empty");
     throw new Error("Task cannot be empty");
   }
   await TodoModel.create({
@@ -24,7 +24,7 @@ const createTodo = asyncHandler(async (req, res) => {
 const updateTodo = asyncHandler(async (req, res) => {
   const id = await TodoModel.findById(req.params.id);
   if (!id) {
-    res.status(404);
+    res.status(400).json("No item found from this id");
     throw new Error("No item found from this id");
   }
   const data = await TodoModel.findOneAndUpdate(
@@ -38,7 +38,7 @@ const updateTodo = asyncHandler(async (req, res) => {
 const deleteTodo = asyncHandler(async (req, res) => {
   const todo = await TodoModel.findById(req.body.id);
   if (!todo) {
-    res.status(404);
+    res.status(404).json("Todo not found");
     throw new Error("Todo not found");
   }
   const data = await TodoModel.deleteOne({ _id: req.body.id });
